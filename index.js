@@ -26,11 +26,12 @@ const GLOBALS = {
 var libxml = require("libxmljs");
 var axios = require('axios');
 var windows1251 = require('windows-1251');
+var Cookies = require("cookies")
 
 //var bodyParser = require('body-parser');
 //var jsonParser = bodyParser.json();
 
-
+1
 var instance = axios.create({
   timeout: 10000,
   headers: {
@@ -46,84 +47,58 @@ var aut = function(addr) {
 }
 
 
-
-var xml = '<?xml version="1.0" encoding="UTF-8"?>' +
-  '<root>' +
-  '<child foo="bar">' +
-  '<grandchild>1 content</grandchild>' +
-  '<ff><grandchild>2 content</grandchild></ff>' +
-  '<grandchild>3 content</grandchild>' +
-  '<grandchild>4 content</grandchild>' +
-  '<grandchild>5 content</grandchild>' +
-  '</child>' +
-  '<sibling>with content!</sibling>' +
-  '</root>';
-var xmlDoc = libxml.parseXmlString(xml);
-
-// xpath queries
-var gchild = xmlDoc.get('//grandchild');
-
-while (gchild != null) {
-  console.log(gchild.text());
-  gchild = gchild.nextElement()
-
-}
+//
+// var xml = '<?xml version="1.0" encoding="UTF-8"?>' +
+//   '<root>' +
+//   '<child foo="bar">' +
+//   '<grandchild>1 content</grandchild>' +
+//   '<ff><grandchild>2 content</grandchild></ff>' +
+//   '<grandchild>3 content</grandchild>' +
+//   '<grandchild>4 content</grandchild>' +
+//   '<grandchild>5 content</grandchild>' +
+//   '</child>' +
+//   '<sibling>with content!</sibling>' +
+//   '</root>';
+// var xmlDoc = libxml.parseXmlString(xml);
+//
+// // xpath queries
+// var gchild = xmlDoc.get('//grandchild');
+//
+// while (gchild != null) {
+//   console.log(gchild.text());
+//   gchild = gchild.nextElement()
+//
+// }
 
 // prints "grandchild content"
-/*
-var children = xmlDoc.root().childNodes();
-
-var child = children[0];
-
-console.log(child.value)
-try {
-  console.log(child.attr('foo').value()); // prints "bar"
-} catch (e) {
-  console.log(e);
-}
-var arr = xmlDoc.find('//grandchild');
-for (var val in arr) {
-  // xmlDoc2 = libxml.parseXmlString('<?xml version="1.0" encoding="UTF-8"?>' +
-  //   '<root>' + arr[val]
-  //   '</root>');
-  var mlDoc2 = libxml.parseXmlString(arr[val]).get('//grandchild').text();;
-
-  console.log(mlDoc2); // prints "grandchild content"
-  //console.log("obj." + val + " = " + arr[val]);
-}
-console.log(Object.getOwnPropertyNames(arr).sort());
-console.log(arr[0])
 
 
-*/
-// var aut1 = aut(PSI_ROZA.HOST +
-//   '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
-//   '&version=' + GLOBALS.VERSION +
-//   '.10&appType=iPhone&appVersion=5.5.0&deviceName=Simulator&devID=' +
-//   GLOBALS.DEVID).then(function(response) {
-//   var encodedData = windows1251.encode(response.data);
-//   var str = encodedData.replace("windows-1251", "UTF-8")
-//
-//
-//   var xmlDoc = libxml.parseXmlString(str);
-//
-//   // xpath queries
-//   var gchild = xmlDoc.get('//response/confirmRegistrationStage/mGUID');
-//
-//   console.log(gchild.text()); // prints "grandchild content"
-//
-// })
-//
-//
-// .catch(function(error) {
-//   console.log(error)
-// });
+var aut1 = aut(PSI_ROZA.HOST +
+  '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
+  '&version=' + GLOBALS.VERSION +
+  '.10&appType=iPhone&appVersion=5.5.0&deviceName=Simulator&devID=' +
+  GLOBALS.DEVID).then(function(response) {
+  var encodedData = windows1251.encode(response.data);
+  var str = encodedData.replace("windows-1251", "UTF-8")
+  var xmlDoc = libxml.parseXmlString(str);
+
+  // xpath queries
+  var gchild = xmlDoc.get('//response/confirmRegistrationStage/mGUID');
+
+  console.log(gchild.text()); // prints "grandchild content"
+
+})
+
+
+.catch(function(error) {
+  console.log(error)
+});
 
 /*
 
 function httpGet(url1) {
   return new Promise(function(resolve, reject) {
-    axios({
+    axios({ß
       method: 'get',
       url: url1,
 
