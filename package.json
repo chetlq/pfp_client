@@ -1,0 +1,20 @@
+{
+  "name": "PFP-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Ivan Krivoy",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "axios": "^0.15.3",
+    "libxmljs": "^0.18.4",
+    "windows-1251": "^1.0.0"
+
+
+  }
+}
