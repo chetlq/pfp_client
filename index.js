@@ -96,30 +96,30 @@ console.log(arr[0])
 
 
 */
-// var aut1 = aut(PSI_ROZA.HOST +
-//   '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
-//   '&version=' + GLOBALS.VERSION +
-//   '.10&appType=iPhone&appVersion=5.5.0&deviceName=Simulator&devID=' +
-//   GLOBALS.DEVID).then(function(response) {
-//   var encodedData = windows1251.encode(response.data);
-//   var str = encodedData.replace("windows-1251", "UTF-8")
-//
-//
-//   var xmlDoc = libxml.parseXmlString(str);
-//
-//   // xpath queries
-//   var gchild = xmlDoc.get('//response/confirmRegistrationStage/mGUID');
-//
-//   console.log(gchild.text()); // prints "grandchild content"
-//
-// })
-//
-//
-// .catch(function(error) {
-//   console.log(error)
-// });
+var aut1 = aut(PSI_ROZA.HOST +
+  '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
+  '&version=' + GLOBALS.VERSION +
+  '.10&appType=iPhone&appVersion=5.5.0&deviceName=Simulator&devID=' +
+  GLOBALS.DEVID).then(function(response) {
+  var encodedData = windows1251.encode(response.data);
+  var str = encodedData.replace("windows-1251", "UTF-8")
 
-/*
+
+  var xmlDoc = libxml.parseXmlString(str);
+
+  // xpath queries
+  var gchild = xmlDoc.get('//response/confirmRegistrationStage/mGUID');
+
+  console.log(gchild.text()); // prints "grandchild content"
+
+})
+
+
+.catch(function(error) {
+  console.log(error)
+});
+
+
 
 function httpGet(url1) {
   return new Promise(function(resolve, reject) {
@@ -136,16 +136,67 @@ function httpGet(url1) {
   });
 }
 
+
+
+aut(PSI_ROZA.HOST +
+  '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
+  '&version=' + GLOBALS.VERSION +
+  '.10&appType=iPhone&appVersion=5.5.0&deviceName=Simulator&devID=' +
+  GLOBALS.DEVID).then(function(response) {
+  var encodedData = windows1251.encode(response.data);
+  var str = encodedData.replace("windows-1251", "UTF-8")
+
+
+  var xmlDoc = libxml.parseXmlString(str);
+
+  // xpath queries
+  var gchild = xmlDoc.get('//response/confirmRegistrationStage/mGUID');
+  console.log(gchild.text()); // prints "grandchild content"
+  return gchild.text();
+
+
+}).then(mGUID => {
+  aut(PSI_ROZA.HOST + "/CSAMAPI/registerApp.do?operation=confirm&mGUID=" +
+    mGUID + "&smsPassword=" + PSI_ROZA.SMS_PASS + "&version=" + GLOBALS.VERSION +
+    ".10&appType=iPhone");
+}).then(
+  aut(PSI_ROZA.HOST + "/CSAMAPI/registerApp.do?operation=confirm&mGUID=" +
+    mGUID + "&smsPassword=" + PSI_ROZA.SMS_PASS + "&version=" + GLOBALS.VERSION +
+    ".10&appType=iPhone");
+
+
+)
+
+
+.catch(function(error) {
+  console.log(error)
+});
+
 httpGet(
-    "https://stackoverflow.com/questions/39716569/nodejs-unhandledpromiserejectionwarning"
+    PSI_ROZA.HOST +
+    '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
+    '&version=' + GLOBALS.VERSION +
+    '.10&appType=iPhone&appVersion=5.5.0&deviceName=Simulator&devID=' +
+    GLOBALS.DEVID
   )
   // 1. Получить данные о пользователе в JSON и передать дальше
   .then(response => {
-    console.log(response);
-    return "http://david-m.livejournal.com/1308551.html";
+    var encodedData = windows1251.encode(response.data);
+    var str = encodedData.replace("windows-1251", "UTF-8")
+
+
+    var xmlDoc = libxml.parseXmlString(str);
+
+    // xpath queries
+    var gchild = xmlDoc.get('//response/confirmRegistrationStage/mGUID');
+
+    //console.log(gchild.text()); // prints "grandchild content"
+
+    //console.log(response);
+    return gchild.text();
   })
   // 2. Получить информацию с github
-  .then(user => {
+  .then(mguid => {
     //console.log(user);
     return httpGet(
       user
@@ -156,7 +207,7 @@ httpGet(
     console.log(githubUser); // (*)
   });
 
-*/
+
 
 /*
 var aut2 = aut(PSI_ROZA.HOST +
