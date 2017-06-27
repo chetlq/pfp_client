@@ -23,11 +23,17 @@ const GLOBALS = {
 }
 
 
+var Buffer = require('buffer').Buffer;
+var Iconv = require('iconv').Iconv;
+
 const libxml = require("libxmljs");
 const axios = require('axios');
 const windows1251 = require('windows-1251');
+
+var encoding = require("encoding");
 const axiosCookieJarSupport = require('@3846masa/axios-cookiejar-support');
 const tough = require('tough-cookie');
+var Cookie = tough.Cookie;
 
 axiosCookieJarSupport(axios);
 const cookieJar = new tough.CookieJar();
@@ -37,7 +43,7 @@ const cookieJar = new tough.CookieJar();
 
 
 var instance = axios.create({
-  timeout: 10000,
+  timeout: 30000,
   jar: cookieJar, // tough.CookieJar or boolean
   withCredentials: true,
   headers: {
@@ -48,9 +54,6 @@ var instance = axios.create({
   }
 });
 
-var aut = function(addr) {
-  return instance.post(addr);
-}
 
 
 /*
@@ -105,6 +108,7 @@ console.log(arr[0])
 
 
 */
+/*
 var aut1 = aut(PSI_ROZA.HOST +
   '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
   '&version=' + GLOBALS.VERSION +
@@ -118,11 +122,17 @@ var aut1 = aut(PSI_ROZA.HOST +
   var xmlDoc = libxml.parseXmlString(str);
 
   // xpath queries
-  var gchild = xmlDoc.get('//response/confirmRegistrationStage/mGUID');
-  cookieJar.setCookieSync('key=value; domain='++, 'https://mockbin.org');
-  console.log(gchild.text()); // prints "grandchild content"
-  console.log(response.status);
-  console.log(cookieJar);
+  var gchild = xmlDoc.get('//response/confirmRegistrationStage/mGUID').text();
+  // cookieJar.setCookieSync('JSESSIONID=' + gchild, PSI_ROZA.HOST_BLOCK +
+  //   '/mobile' + GLOBALS.VERSION + '/postCSALogin.do');
+  //cookieJar.setCookieSync('JSESSIONID=' + gchild, PSI_ROZA.HOST_BLOCK+'/mobile'+GLOBALS.VERSION+'/private/payments/list.do);'
+  //console.log(gchild); // prints "grandchild content"
+  //console.log(response.status);
+  //console.log(cookieJar.toJSON());
+  // var cookie = Cookie.parse("mGUID=" + gchild +
+  //   "; Domain=194.186.207.23; Path=/");
+  // var cook = cookieJar.setCookieSync(cookie, PSI_ROZA.HOST);
+  // console.log(cook);
 
 })
 
@@ -130,7 +140,7 @@ var aut1 = aut(PSI_ROZA.HOST +
 .catch(function(error) {
   console.log(error)
 });
-
+*/
 
 
 function httpGet(url1) {
@@ -149,41 +159,97 @@ function httpGet(url1) {
 }
 
 
-/*
+var aut = function(addr, val) {
+  return instance.post(addr).then(response => {
+    // var iconv = new Iconv('windows-1251', 'UTF-8');
+    // var encodedData = iconv.convert(response.data).toString();
+    var encodedData = response.data;
+    var str = encodedData.replace("windows-1251", "UTF-8")
+    var xmlDoc = libxml.parseXmlString(str);
+
+    var gchild = xmlDoc.get(val);
+    console.log(val + ': ' + gchild.text()); // prints "grandchild content"
+    return gchild.text();
+    //console.log("aut2 status: " + response.status);
+    //console.log(response.data)
+  }).catch(function(error) {
+    console.log(error)
+  });
+};
+
+var aut2 = function(addr) {
+  return instance.post(addr).then(response => {
+    var iconv = new Iconv('windows-1251', 'UTF-8');
+    var encodedData = iconv.convert(response.data).toString();
+    //var encodedData = windows1251.encode(response.data);
+    var str = encodedData.replace("windows-1251", "UTF-8")
+      //var xmlDoc = libxml.parseXmlString(str);
+
+    //var gchild = xmlDoc.get(val);
+    //console.log(val + ': ' + gchild.text());
+    return str;
+    //console.log("aut2 status: " + response.status);
+    //console.log(response.data)
+  }).catch(function(error) {
+    console.log(error)
+  });
+};
+
+// var iconv = new Iconv('windows-1251', 'UTF-8');
+// var x = iconv.convert(
+//   '<?xml version="1.0" encoding="windows-1251" ?><response>     <status>         <code>0</code>     </status>         <loginCompleted>true</loginCompleted>     <person>         <surName>ццццц</surName>         <firstName>цццццц</firstName>         <patrName>ццццц</patrName>             <lastLogonDate>27.06.2017T14:53</lastLogonDate>                 <lastIpAddress>194.186.207.251</lastIpAddress>         <creationType>UDBO</creationType>         <region>                    <id>0</id>                     <name>ццццццц</name>         </region>                 <mbstatus>mbk</mbstatus>             <loginId>5000406014</loginId>             <TARIF_PLAN>0</TARIF_PLAN>              <localeId>RU</localeId>     </person>             <isLightSchemeERIB>false</isLightSchemeERIB>         <isAfterRegistration>true</isAfterRegistration> </response>'
+// );
+// console.log(x.toString());
+
+
+
 aut(PSI_ROZA.HOST +
-  '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
-  '&version=' + GLOBALS.VERSION +
-  '.10&appType=iPhone&appVersion=5.5.0&deviceName=Simulator&devID=' +
-  GLOBALS.DEVID).then(function(response) {
-  var encodedData = windows1251.encode(response.data);
-  var str = encodedData.replace("windows-1251", "UTF-8")
+    '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
+    '&version=' + GLOBALS.VERSION +
+    '.10&appType=iPhone&appVersion=5.5.0&deviceName=Simulator&devID=' +
+    GLOBALS.DEVID, '//response/confirmRegistrationStage/mGUID').then(mGUID => {
+    console.log(mGUID);
+    return aut(PSI_ROZA.HOST +
+      "/CSAMAPI/registerApp.do?operation=confirm&mGUID=" +
+      mGUID + "&smsPassword=" + PSI_ROZA.SMS_PASS + "&version=" + GLOBALS.VERSION +
+      ".10&appType=iPhone", '//response/status/code').then(() => {
+      return mGUID
+    });
+  })
+  .then(mGUID => {
+    console.log("mGUID: " + mGUID);
 
+    return aut(PSI_ROZA.HOST +
+      "/CSAMAPI/registerApp.do?operation=createPIN&mGUID=" +
+      mGUID + "&password=" + PSI_ROZA.PASS + "&version=" + GLOBALS.VERSION +
+      ".10&appType=iPhone" +
+      "&appVersion=5.5.0&deviceName=Simulator&isLightScheme=false&devID=" +
+      GLOBALS.DEVID + "&mobileSdkData=1", '//response/loginData/token');
 
-  var xmlDoc = libxml.parseXmlString(str);
-
-  // xpath queries
-  var gchild = xmlDoc.get('//response/confirmRegistrationStage/mGUID');
-  console.log(gchild.text()); // prints "grandchild content"
-  return gchild.text();
-
-
-}).then(mGUID => {
-  aut(PSI_ROZA.HOST + "/CSAMAPI/registerApp.do?operation=confirm&mGUID=" +
-    mGUID + "&smsPassword=" + PSI_ROZA.SMS_PASS + "&version=" + GLOBALS.VERSION +
-    ".10&appType=iPhone");
-}).then(
-  aut(PSI_ROZA.HOST + "/CSAMAPI/registerApp.do?operation=confirm&mGUID=" +
-    mGUID + "&smsPassword=" + PSI_ROZA.SMS_PASS + "&version=" + GLOBALS.VERSION +
-    ".10&appType=iPhone");
-
-
-)
+  })
+  .then(token => {
+    console.log("token: " + token);
+    return aut2(PSI_ROZA.HOST_BLOCK + "/mobile" + GLOBALS.VERSION +
+      "/postCSALogin.do?token=" + token);
+  }).then(ttt => {
+    console.log(ttt);
+  })
+  // .then(
+  //   aut(PSI_ROZA.HOST + "/CSAMAPI/registerApp.do?operation=confirm&mGUID=" +
+  //     mGUID + "&smsPassword=" + PSI_ROZA.SMS_PASS + "&version=" + GLOBALS.VERSION +
+  //     ".10&appType=iPhone");
+  //
+  //
+  // )
 
 
 .catch(function(error) {
   console.log(error)
 });
 
+
+
+/*
 httpGet(
     PSI_ROZA.HOST +
     '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +

@@ -15,7 +15,9 @@
     "libxmljs": "^0.18.4",
     "windows-1251": "^1.0.0",
     "cookies": "^0.7.0",
-    "@3846masa/axios-cookiejar-support": "^0.0.4"
+    "@3846masa/axios-cookiejar-support": "^0.0.4",
+    "encoding": "^0.1.12",
+    "iconv": "^2.3.0"
 
   }
 }
