@@ -23,9 +23,14 @@ const GLOBALS = {
 }
 
 
-var libxml = require("libxmljs");
-var axios = require('axios');
-var windows1251 = require('windows-1251');
+const libxml = require("libxmljs");
+const axios = require('axios');
+const windows1251 = require('windows-1251');
+const axiosCookieJarSupport = require('@3846masa/axios-cookiejar-support');
+const tough = require('tough-cookie');
+
+axiosCookieJarSupport(axios);
+const cookieJar = new tough.CookieJar();
 
 //var bodyParser = require('body-parser');
 //var jsonParser = bodyParser.json();
@@ -33,6 +38,8 @@ var windows1251 = require('windows-1251');
 
 var instance = axios.create({
   timeout: 10000,
+  jar: cookieJar, // tough.CookieJar or boolean
+  withCredentials: true,
   headers: {
     'Accept-Language': 'ru;q=1',
     'Content-Type': 'application/x-www-form-urlencoded',
@@ -46,7 +53,7 @@ var aut = function(addr) {
 }
 
 
-
+/*
 var xml = '<?xml version="1.0" encoding="UTF-8"?>' +
   '<root>' +
   '<child foo="bar">' +
@@ -68,6 +75,8 @@ while (gchild != null) {
   gchild = gchild.nextElement()
 
 }
+*/
+
 
 // prints "grandchild content"
 /*
@@ -100,7 +109,8 @@ var aut1 = aut(PSI_ROZA.HOST +
   '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
   '&version=' + GLOBALS.VERSION +
   '.10&appType=iPhone&appVersion=5.5.0&deviceName=Simulator&devID=' +
-  GLOBALS.DEVID).then(function(response) {
+  GLOBALS.DEVID).then((response) => {
+
   var encodedData = windows1251.encode(response.data);
   var str = encodedData.replace("windows-1251", "UTF-8")
 
@@ -109,8 +119,10 @@ var aut1 = aut(PSI_ROZA.HOST +
 
   // xpath queries
   var gchild = xmlDoc.get('//response/confirmRegistrationStage/mGUID');
-
+  cookieJar.setCookieSync('key=value; domain='++, 'https://mockbin.org');
   console.log(gchild.text()); // prints "grandchild content"
+  console.log(response.status);
+  console.log(cookieJar);
 
 })
 
@@ -137,7 +149,7 @@ function httpGet(url1) {
 }
 
 
-
+/*
 aut(PSI_ROZA.HOST +
   '/CSAMAPI/registerApp.do?operation=register&login=' + PSI_ROZA.LOGIN +
   '&version=' + GLOBALS.VERSION +
@@ -207,7 +219,7 @@ httpGet(
     console.log(githubUser); // (*)
   });
 
-
+*/
 
 /*
 var aut2 = aut(PSI_ROZA.HOST +
