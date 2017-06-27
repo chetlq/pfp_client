@@ -28,9 +28,7 @@ var Iconv = require('iconv').Iconv;
 
 const libxml = require("libxmljs");
 const axios = require('axios');
-const windows1251 = require('windows-1251');
 
-var encoding = require("encoding");
 const axiosCookieJarSupport = require('@3846masa/axios-cookiejar-support');
 const tough = require('tough-cookie');
 var Cookie = tough.Cookie;
