@@ -11,10 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.16.1",
-    "axios": "^0.15.3",
+    "axios": "^0.16.0",
     "libxmljs": "^0.18.4",
     "windows-1251": "^1.0.0",
-    "cookies": "^0.7.0"
+    "cookies": "^0.7.0",
+    "@3846masa/axios-cookiejar-support": "^0.0.4"
 
 
   }

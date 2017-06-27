@@ -1,6 +1,22 @@
 var http = require("http");
 var url = require("url");
+const axios = require('axios')
+const axiosCookieJarSupport = require('@3846masa/axios-cookiejar-support');
+const tough = require('tough-cookie');
+axiosCookieJarSupport(axios);
 
+const cookieJar = new tough.CookieJar();
+
+axios.get('http://www.voa.com/', {
+    jar: cookieJar, // tough.CookieJar or boolean
+    withCredentials: true // If true, send cookie stored in jar
+  })
+  .then(() => {
+    console.log(cookieJar);
+  }).catch(function(error) {
+    console.log('error');
+  });
+/*
 var urlstring = "http://www.voa.com/";
 var parsedurl = url.parse(urlstring);
 var options = {
@@ -51,3 +67,4 @@ request.on(
 );
 
 request.end(); // let request know it is finished sending
+*/
