@@ -2,10 +2,10 @@
 const PSI_ROZA = {
   LOGIN: "3554678395",
   HOST: "http://194.186.207.23",
-  HOST_BLOCK: "http://194.186.207.23:9999",
+  HOST_BLOCK: "http://194.186.207.23",
   SMS_PASS: "55098",
-  mGUID: "4856a406c200643f529efd6fe5e90fae",
-  token: "59821587bc4405b466f4fc6e731efa16",
+  mGUID: "2ba47444ac8c7bf8c8aabc967aaa097f",
+  token: "349e2e4c3c15f1dead54e2d68a263099",
   PASS: "11223",
   PFMtoken: "b02ddd9811f476eebfbce27ca8f404b1"
 };
@@ -108,13 +108,15 @@ aut(PSI_ROZA.HOST +
     //console.log(v)
   })
 }).then(() => {
+
   return aut(PSI_ROZA.HOST_BLOCK + "/mobile" + GLOBALS.VERSION +
-      "/private/graphics/finance.do"
+      "/private/finances/financeCalendar/showSelected.do?onDate=03.03.2017&selectedCardIds=552280"
+
     ).then(res => {
 
       var promise = new Promise(function(resolve, reject) {
         var obj = parse(res.data);
-
+        //
         // console.log(inspect(obj.root, {
         //   colors: true,
         //   depth: Infinity
@@ -123,10 +125,10 @@ aut(PSI_ROZA.HOST +
 
 
         //console.log(myobj.arr[0]);
+
         var t = function(objroot) {
           var myobj = {
-            cards: [],
-            accounts: []
+            operations: []
 
           };
           (function k(obj) {
@@ -138,25 +140,17 @@ aut(PSI_ROZA.HOST +
               });
             } else {
 
-              if (obj.name == 'card') {
+              if (obj.name == 'operation') {
                 var o = {};
                 obj.children.forEach(function(item, i) {
                   if (item.name == "id") o.id = item.content;
-                  if (item.name == "balance") o.balance =
+                  if (item.name == "description") o.description =
                     item.content;
+                  if (item.name == "categoryName") o.categoryName =
+                    item.content;
+                  if (item.name == "amount") o.amount = item.content;
                 });
-                myobj.cards.push(o)
-              } else if (obj.name == 'account') {
-                var o = {};
-                obj.children.forEach(function(item, i) {
-                  if (item.name == "id") o.id = item.content;
-                  if (item.name == "balance") o.balance =
-                    item.content;
-                  if (item.name == "maxSumWrite") o.maxSumWrite =
-                    item.content;
-                });
-                //console.log(obj.children[1]);
-                myobj.accounts.push(o)
+                myobj.operations.push(o)
               } else {
                 k(obj.children)
               }
@@ -170,16 +164,13 @@ aut(PSI_ROZA.HOST +
         var myobj = t(obj.root);
 
 
-        myobj.cards.forEach(function(item, i) {
-          console.log("id = " + item.id + " balance = " + item.balance);
+        myobj.operations.forEach(function(item, i) {
+          console.log("id = " + item.id + " description = " +
+            item.description + " categoryName = " + item.categoryName +
+            " amount = " + item.amount);
 
         });
 
-        myobj.accounts.forEach(function(item, i) {
-          console.log("id = " + item.id + " balance = " + item.balance +
-            " maxSumWrite = " + item.maxSumWrite);
-
-        })
 
 
         resolve(1);
